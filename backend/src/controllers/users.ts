@@ -7,8 +7,10 @@ import jwt from 'jsonwebtoken';
 const SECRET = 'your_secret_key';  // This should be in an environment variable or config file
 
 export const registerUser = async (req: any, res: any) => {
-    if (!req.body || !req.body.password) {
-      return res.status(400).json({ message: "Password field is required." }) 
+  const { password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match." });
     }
     try {
       const existingUser = await UserModel.getUserByEmail(req.body.email);
