@@ -7,17 +7,15 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: Number(process.env.DB_PORT)
-  });
+});
 
 export const createUser = async (userData: any) => {
-  console.log(userData);
-  console.log('Password to hash:', userData.password);
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const { username, email, profile_picture, last_login, is_admin } = userData;
   const result = await pool.query(`
-  INSERT INTO users (user_id, username, email, password, profile_picture, last_login, is_admin) 
-  VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6) RETURNING *
-`, [username, email, hashedPassword, profile_picture, last_login, is_admin]);
+    INSERT INTO users (user_id, username, email, password, profile_picture, last_login, is_admin) 
+    VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6) RETURNING *
+  `, [username, email, hashedPassword, profile_picture, last_login, is_admin]);
 
   return result.rows[0];
 };
@@ -48,13 +46,25 @@ export const loginUser = async (username: string, password: string) => {
 };
 
 export const getUserById = async (id: string) => {
-    const result = await pool.query(`SELECT * FROM users WHERE user_id = $1`, [id]);
-    return result.rows[0];
-  };  
+  const result = await pool.query(`SELECT * FROM users WHERE user_id = $1`, [id]);
+  return result.rows[0];
+};  
 
 export const getUserByEmail = async (email: string) => {
   const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
   return result.rows[0];
+};
+
+export const storeRefreshToken = async (userId: string, token: string) => {
+  await pool.query(`UPDATE users SET refresh_token = $1 WHERE user_id = $2`, [token, userId]);
+};
+
+export const getRefreshTokenForUser = async (userId: string) => {
+  const result = await pool.query(`SELECT refresh_token FROM users WHERE user_id = $1`, [userId]);
+  if (result.rows.length > 0) {
+    return result.rows[0].refresh_token;
+  }
+  return null;
 };
 
 export default pool;

@@ -2,6 +2,8 @@ import React from 'react';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';  // A hypothetical Dashboard component.
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import ProfileListing from './components/ProfileListing';
 
 const App: React.FC = () => {
   // Here's a simple check for auth status. In a real-world scenario, 
@@ -10,15 +12,18 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <Navbar /> {/* Navbar added here to be shown on all routes */}
       <Routes>
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />} />
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/" element={<ProfileListing />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
 
 

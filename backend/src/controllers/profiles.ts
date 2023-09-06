@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createProfile, getProfileById, updateProfile, deleteProfile } from '../models/profiles';
+import { createProfile, getProfileById, updateProfile, deleteProfile, getAllProfilesModel } from '../models/profiles';
 
 export const getProfile = async (req: Request, res: Response) => {
     try {
@@ -16,6 +16,20 @@ export const getProfile = async (req: Request, res: Response) => {
         }
     }
 };
+
+export const getAllProfiles = async (req: Request, res: Response) => {
+    try {
+        const profiles = await getAllProfilesModel();
+        return res.status(200).json(profiles);
+    } catch (error) {
+        if (typeof error === 'object' && error !== null && 'message' in error) {
+            return res.status(500).json({ message: 'Server error', error: error.message });
+        } else {
+            return res.status(500).json({ message: 'Server error', error: 'An unknown error occurred' });
+        }
+    }
+};
+
 
 export const addProfile = async (req: Request, res: Response) => {
     try {

@@ -16,6 +16,12 @@ export const getProfileById = async (id: string): Promise<Profile | null> => {
     return result.rows[0] || null;
 };
 
+export const getAllProfilesModel = async (): Promise<Profile[]> => {
+    const result = await pool.query('SELECT * FROM profiles');
+    return result.rows;
+};
+
+
 export const createProfile = async (profile: Profile): Promise<Profile> => {
     const result = await pool.query(
         'INSERT INTO profiles (user_id, first_name, last_name, gender, date_of_birth, bio, smoker, pet, hobbies, language_spoken, looking_to_move_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *', 
