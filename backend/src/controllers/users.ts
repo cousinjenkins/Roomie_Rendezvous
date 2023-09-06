@@ -108,11 +108,10 @@ export const loginUser = async (req: any, res: any) => {
       const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' });
 
       // Generate Refresh Token
-      const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '7d' }); // Change the expiresIn based on your preference.
+      const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '7d' }); 
 
-      // You might also want to save the refreshToken to a database to keep track of it.
-      // This allows you to invalidate specific tokens if needed, and ensure that only one refresh token
-      // is valid per user at any given time if that's a behavior you'd like to enforce.
+      // Save the refreshToken to the database
+      await UserModel.storeRefreshToken(user.user_id, refreshToken);
 
       res.status(200).json({ user, accessToken, refreshToken });
     } else {

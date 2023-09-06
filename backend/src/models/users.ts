@@ -20,17 +20,20 @@ export const createUser = async (userData: any) => {
   return result.rows[0];
 };
 
-export const updateUser = async (id: string, userData: any) => {
+export const updateUser = async (id: string, userData: Record<string, any>) => {
   const columns: string[] = [];
-  const values = [];
+  const values: (string | number)[] = [];  // Explicitly type values array
+  
   Object.keys(userData).forEach((key, i) => {
     columns.push(`${key} = $${i + 2}`);
     values.push(userData[key]);
   });
+  
   values.push(id);
   const result = await pool.query(`UPDATE users SET ${columns.join(", ")} WHERE user_id = $1 RETURNING *`, values);
   return result.rows[0];
 };
+
 
 export const deleteUser = async (id: string) => {
   await pool.query(`DELETE FROM users WHERE user_id = $1`, [id]);
