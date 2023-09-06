@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 import './config/db';
 import userRoutes from './routes/users';
+import profilesRouter from './routes/profiles';
+import messagesRouter from './routes/messages'
+import matchesRouter from './routes/matches'
+import disputesRouter from './routes/disputes';
 import cors from 'cors';
 
 
@@ -13,7 +17,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 app.use('/users', userRoutes);
-
+app.use('/profiles', profilesRouter);
+app.use('/messages', messagesRouter);
+app.use('/matches', matchesRouter);
+app.use('/disputes', disputesRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');

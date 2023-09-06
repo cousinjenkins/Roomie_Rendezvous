@@ -57,4 +57,4 @@ export const getUserByEmail = async (email: string) => {
   return result.rows[0];
 };
 
-export default pool; 
+export default pool;
