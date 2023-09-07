@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool } from 'pg'; // for interfacing with my PostgreSQL database.
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -6,7 +6,7 @@ const pool = new Pool({
     password: process.env.DB_PASS,
     port: Number(process.env.DB_PORT),
     database: process.env.DB_NAME
-});
+}); // re-usable
 
 pool.connect((err: Error) => {
     if (err) {

@@ -54,3 +54,5 @@ export type Dispute = {
     date_reported?: Date;
     date_resolved?: Date;
 };
+
+// essentianlly documentation for what data types each entities represent so that you can write it out within TS. ie. API Dict

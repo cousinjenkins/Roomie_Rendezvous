@@ -9,8 +9,8 @@ const pool = new Pool({
     port: Number(process.env.DB_PORT)
 });
 
-export const createUser = async (userData: any) => {
-  const hashedPassword = await bcrypt.hash(userData.password, 10);
+export const createUser = async (userData: any) => { 
+  const hashedPassword = await bcrypt.hash(userData.password, 10); // hashes the user's password
   const { username, email, profile_picture, last_login, is_admin } = userData;
   const result = await pool.query(`
     INSERT INTO users (user_id, username, email, password, profile_picture, last_login, is_admin) 
@@ -18,7 +18,7 @@ export const createUser = async (userData: any) => {
   `, [username, email, hashedPassword, profile_picture, last_login, is_admin]);
 
   return result.rows[0];
-};
+}; 
 
 export const updateUser = async (id: string, userData: Record<string, any>) => {
   const columns: string[] = [];
@@ -60,7 +60,7 @@ export const getUserByEmail = async (email: string) => {
 
 export const storeRefreshToken = async (userId: string, token: string) => {
   await pool.query(`UPDATE users SET refresh_token = $1 WHERE user_id = $2`, [token, userId]);
-};
+}; // updates a user's record to store a refresh token for JWT Auth
 
 export const getRefreshTokenForUser = async (userId: string) => {
   const result = await pool.query(`SELECT refresh_token FROM users WHERE user_id = $1`, [userId]);
@@ -68,6 +68,6 @@ export const getRefreshTokenForUser = async (userId: string) => {
     return result.rows[0].refresh_token;
   }
   return null;
-};
+}; // fetches the stored refresh_token for the user
 
 export default pool;
