@@ -39,8 +39,8 @@ export const deleteUser = async (id: string) => {
   await pool.query(`DELETE FROM users WHERE user_id = $1`, [id]);
 };
 
-export const loginUser = async (username: string, password: string) => {
-  const result = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
+export const loginUser = async (email: string, password: string) => {
+  const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
   const user = result.rows[0];
   if (user && await bcrypt.compare(password, user.password)) {
     return user;

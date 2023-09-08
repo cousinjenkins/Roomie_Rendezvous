@@ -101,7 +101,7 @@ export const deleteUser = async (req: any, res: any) => {
 
 export const loginUser = async (req: any, res: any) => {
   try {
-    const user = await UserModel.loginUser(req.body.username, req.body.password);
+    const user = await UserModel.loginUser(req.body.email, req.body.password);
 
     if (user) {
       
@@ -121,4 +121,4 @@ export const loginUser = async (req: any, res: any) => {
   } catch (error) {
     res.status(500).json({ message: "Error logging in." }); 
   }
-};
+}; 

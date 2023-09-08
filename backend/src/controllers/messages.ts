@@ -17,7 +17,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 
 export const getMessages = async (req: Request, res: Response) => {
     try {
-        // Ensure the receiver_id is provided
+        // to ensure the receiver_id is provided
         if(!req.query.receiver_id) {
             return res.status(400).json({ message: "receiver_id query parameter is required" });
         }

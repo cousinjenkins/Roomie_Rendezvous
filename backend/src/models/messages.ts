@@ -25,4 +25,4 @@ export const getMessagesForReceiver = async (receiverId: string): Promise<Messag
     return result.rows;
 };
 
-// ... other functions for additional features
+

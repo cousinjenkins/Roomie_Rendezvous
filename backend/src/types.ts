@@ -3,6 +3,7 @@ export type User = {
     username: string;
     email: string;
     password: string;  
+    confirm_passsword: string;
     profile_picture?: string;  
     date_joined?: Date;       
     last_login?: Date;        
@@ -10,8 +11,8 @@ export type User = {
 };
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female'
+    MALE = 'Male',
+    FEMALE = 'Female'
 }
 export type Profile = {
     profile_id?: string;
@@ -26,6 +27,7 @@ export type Profile = {
     hobbies?: string;
     language_spoken?: string;
     looking_to_move_date?: Date;
+    university: string;
 };
 
 export interface Message {

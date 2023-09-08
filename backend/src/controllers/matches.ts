@@ -30,4 +30,3 @@ export const getMatch = async (req: Request, res: Response) => {
     } 
 };
 
-// Add more controllers as required...

@@ -25,4 +25,4 @@ export const getMatchById = async (matchId: string): Promise<Match> => {
     return result.rows[0];
 };
 
-// Add more models as required...
+
