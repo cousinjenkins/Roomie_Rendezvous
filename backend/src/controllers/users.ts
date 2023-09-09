@@ -1,11 +1,9 @@
-import * as UserModel from '../models/users'
+import * as UserModel from '../models/users';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from 'jsonwebtoken'; // The JwtPayload type to get the correct TypeScript type for JWT payloads.
+import { JwtPayload } from 'jsonwebtoken'; 
 
-// last_login to be finished 
-
-const ACCESS_SECRET = process.env.ACCESS_SECRET || 'your_access_secret'; // Access token secret
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'your_refresh_secret'; // Refresh token secret
+const ACCESS_SECRET = process.env.ACCESS_SECRET || 'your_access_secret';
+const REFRESH_SECRET = process.env.REFRESH_SECRET || 'your_refresh_secret';
 
 export const registerUser = async (req: any, res: any) => {
   const { password, confirmPassword } = req.body;
@@ -24,9 +22,15 @@ export const registerUser = async (req: any, res: any) => {
     const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' });
     const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '30d' });
 
-    await UserModel.storeRefreshToken(user.user_id, refreshToken); // To store the refresh token within my database.
+    await UserModel.storeRefreshToken(user.user_id, refreshToken);
 
-    res.status(201).json({ user, accessToken, refreshToken });
+    const userResponse = {
+      id: user.user_id,
+      name: user.username,
+      isAdmin: user.is_admin
+    };
+
+    res.status(201).json({ user: userResponse, accessToken, refreshToken });
   } catch (error) {
     console.error("Error in registerUser:", error);
     res.status(500).json({ message: "Error registering user." });
@@ -34,35 +38,34 @@ export const registerUser = async (req: any, res: any) => {
 };
 
 export const refreshToken = async (req: any, res: any) => {
-    const token = req.body.token;
+  const token = req.body.token;
 
-    if (!token) {
-        return res.status(403).json({ message: "No token provided." });
+  if (!token) {
+    return res.status(403).json({ message: "No token provided." });
+  }
+
+  let payload: JwtPayload | string;
+
+  try {
+    payload = jwt.verify(token, REFRESH_SECRET) as JwtPayload;
+
+    if (typeof payload === 'string' || !payload.userId) {
+      return res.status(400).json({ message: "Invalid refresh token." });
     }
 
-    let payload: JwtPayload | string;
+    const storedToken = await UserModel.getRefreshTokenForUser(payload.userId);
 
-    try {
-        payload = jwt.verify(token, REFRESH_SECRET) as JwtPayload;
-
-        if (typeof payload === 'string' || !payload.userId) {
-            return res.status(400).json({ message: "Invalid refresh token." });
-        }
-
-        const storedToken = await UserModel.getRefreshTokenForUser(payload.userId);
-
-        if (!storedToken || storedToken !== token) {
-            return res.status(401).json({ message: "Token does not match." });
-        }
-
-        const newAccessToken = jwt.sign({ userId: payload.userId }, ACCESS_SECRET, { expiresIn: '1h' });
-        return res.json({ accessToken: newAccessToken });
-
-    } catch (err) {
-        return res.status(401).json({ message: "Token verification failed." });
+    if (!storedToken || storedToken !== token) {
+      return res.status(401).json({ message: "Token does not match." });
     }
-}; // to issue a new access_token when the old access_token expires... 1. Checks for token in the req 2. Verifies refresh token and checks with the one stored in the database 3. If valid, issues a new access
-  
+
+    const newAccessToken = jwt.sign({ userId: payload.userId }, ACCESS_SECRET, { expiresIn: '1h' });
+    return res.json({ accessToken: newAccessToken });
+
+  } catch (err) {
+    return res.status(401).json({ message: "Token verification failed." });
+  }
+};
 
 export const getUserById = async (req: any, res: any) => {
   try {
@@ -104,21 +107,24 @@ export const loginUser = async (req: any, res: any) => {
     const user = await UserModel.loginUser(req.body.email, req.body.password);
 
     if (user) {
+      const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' });
+      const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '7d' });
       
-      const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' }); // Generate Access Token
+      await UserModel.storeRefreshToken(user.user_id, refreshToken);
 
-      
-      const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '7d' }); // Generate Refresh Token
+      const userResponse = {
+        id: user.user_id,
+        name: user.username,
+        isAdmin: user.is_admin
+      };
 
-      
-      await UserModel.storeRefreshToken(user.user_id, refreshToken); // saves refresh token to my database again
-
-      res.status(200).json({ user, accessToken, refreshToken });
+      res.status(200).json({ token: accessToken, user: userResponse });
     } else {
       res.status(401).json({ message: "Invalid credentials." });
-    } 
+    }
 
   } catch (error) {
-    res.status(500).json({ message: "Error logging in." }); 
+    res.status(500).json({ message: "Error logging in." });
   }
-}; 
+};
+

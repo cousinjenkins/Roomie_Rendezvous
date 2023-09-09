@@ -40,13 +40,15 @@ export const deleteUser = async (id: string) => {
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
+  const result = await pool.query(`SELECT user_id, username, email, password, is_admin FROM users WHERE email = $1`, [email]);
   const user = result.rows[0];
   if (user && await bcrypt.compare(password, user.password)) {
-    return user;
+    const { password, ...userWithoutPassword } = user; // Destructure to exclude the password
+    return userWithoutPassword; // Only return user info without password
   }
   return null;
 };
+
 
 export const getUserById = async (id: string) => {
   const result = await pool.query(`SELECT * FROM users WHERE user_id = $1`, [id]);
