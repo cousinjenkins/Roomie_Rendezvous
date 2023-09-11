@@ -14,7 +14,8 @@ const Navbar: React.FC = () => {
     try {
       console.log(`Fetching from URL: https://universities.hipolabs.com/search?name=${query}`);
 
-      const response = await fetch(`/search?name=${query}`)
+      const response = await fetch(`http://localhost:3000/search?name=${query}`);
+
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

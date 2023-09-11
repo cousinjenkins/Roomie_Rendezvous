@@ -8,6 +8,9 @@ import messagesRouter from './routes/messages'
 import matchesRouter from './routes/matches'
 import disputesRouter from './routes/disputes';
 import cors from 'cors';
+import proxyRouter from './routes/proxy';
+
+
 
 
 const app = express();
@@ -21,6 +24,8 @@ app.use('/profiles', profilesRouter);
 app.use('/messages', messagesRouter);
 app.use('/matches', matchesRouter);
 app.use('/disputes', disputesRouter);
+app.use('/', proxyRouter);
+
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
