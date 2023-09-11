@@ -12,10 +12,9 @@ const Navbar: React.FC = () => {
 
   const fetchUniversities = async (query: string) => {
     try {
-      console.log(`Fetching from URL: https://universities.hipolabs.com/search?name=${query}`);
+      console.log(`Fetching from URL: http://localhost:3000/search?name=${query}`);
 
       const response = await fetch(`http://localhost:3000/search?name=${query}`);
-
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -25,7 +24,7 @@ const Navbar: React.FC = () => {
       const universityNames = data.map((uni: any) => uni.name);
       setUniversities(universityNames);
     } catch (error) {
-      if (error instanceof Error) { // Check if error is an instance of Error
+      if (error instanceof Error) {
         if (error.message.includes('Failed to fetch')) {
           console.error('Network error. Please check your connection or CORS settings.');
         } else {
@@ -37,10 +36,8 @@ const Navbar: React.FC = () => {
     }
   };
   
-  
-
   const handleSearchChange = (event: React.ChangeEvent<{}>, value: string) => {
-    if (value.length > 2) { // Only search when term is longer than 2 characters for performance reasons.
+    if (value.length > 2) {
       fetchUniversities(value);
     }
   };
@@ -63,7 +60,7 @@ const Navbar: React.FC = () => {
               size="small"
             />
           )}
-          style={{ flex: 1, margin: '0 15px' }}
+          style={{ flex: 'none', width: '250px', margin: '0 15px' }}
         />
         <Button color="inherit" component={RouterLink} to="/login">Login</Button>
       </Toolbar>
@@ -72,4 +69,5 @@ const Navbar: React.FC = () => {
 }
 
 export default Navbar;
+
 

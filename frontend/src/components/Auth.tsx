@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { Button, TextField, Container, Typography, Alert, Paper, Box } from '@mui/material';
+import { useUser } from '../components/userContext';
+import { useNavigate } from 'react-router-dom';
 
 const Auth: React.FC = () => {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
+
+
   const [isLogIn, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -18,32 +24,47 @@ const Auth: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
+    // Checking password match for sign-up scenario
     if (!isLogIn && formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+        setError("Passwords do not match.");
+        return;
     }
-    
-    const endpoint = isLogIn ? '/login' : '/';
+
+    // Endpoint determination based on login/signup state
+    const endpoint = isLogIn ? '/login' : '/register';
+
     try {
-      const response = await fetch(`http://localhost:3000/users${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-      const json = await response.json();
-      if (response.ok) {
-        console.log(json);
-        // Handle success, save token, navigate user etc.
-      } else {
-        setError(json.message);
-      }
+        const response = await fetch(`http://localhost:3000/users${endpoint}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const json = await response.json();
+
+        console.log('Backend Response:', json);
+        if (response.ok) {
+            console.log(json.user.is_admin)
+            setUser(json.user);
+            console.log("Updated Context:", json.user);
+
+            // Navigate based on user's admin status
+            if (json.user.is_admin) {
+                navigate("/adminDashboard");
+            } else {
+                navigate("/dashboard");
+            }
+        } else {
+            setError(json.message);
+        }
     } catch (err) {
-      setError("An error occurred.");
+        setError("An error occurred.");
     }
-  };
+};
+
 
   return (
     <Container component="main" maxWidth="xs" style={{ marginTop: '10vh' }}>
