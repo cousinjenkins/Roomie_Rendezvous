@@ -39,8 +39,6 @@ const ProfileListing: React.FC = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>Profiles</Typography>
-
       <Grid container spacing={3}>
         {profiles.map(profile => (
           <Grid item xs={12} sm={6} md={4} key={profile.profile_id}>

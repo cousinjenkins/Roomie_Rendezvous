@@ -1,13 +1,13 @@
 export type User = {
-    user_id?: string;  
+    user_id: string;  
     username: string;
     email: string;
     password: string;  
-    confirm_passsword: string;
+    confirm_password: string;
     profile_picture?: string;  
     date_joined?: Date;       
     last_login?: Date;        
-    is_admin?: boolean;       
+    isAdmin?: boolean;       
 };
 
 export enum Gender {

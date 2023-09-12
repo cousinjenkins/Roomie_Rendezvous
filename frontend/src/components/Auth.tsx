@@ -7,7 +7,6 @@ const Auth: React.FC = () => {
   const { setUser } = useUser();
   const navigate = useNavigate();
 
-
   const [isLogIn, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -25,13 +24,11 @@ const Auth: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Checking password match for sign-up scenario
     if (!isLogIn && formData.password !== formData.confirmPassword) {
         setError("Passwords do not match.");
         return;
     }
 
-    // Endpoint determination based on login/signup state
     const endpoint = isLogIn ? '/login' : '/register';
 
     try {
@@ -45,13 +42,14 @@ const Auth: React.FC = () => {
 
         const json = await response.json();
 
-        console.log('Backend Response:', json);
         if (response.ok) {
-            console.log(json.user.is_admin)
             setUser(json.user);
-            console.log("Updated Context:", json.user);
+            
+            const token = json.token;
+            if (token) {
+              localStorage.setItem('jwt_token', token);  // Storing the token in local storage
+            }
 
-            // Navigate based on user's admin status
             if (json.user.is_admin) {
                 navigate("/adminDashboard");
             } else {
@@ -63,8 +61,7 @@ const Auth: React.FC = () => {
     } catch (err) {
         setError("An error occurred.");
     }
-};
-
+  };
 
   return (
     <Container component="main" maxWidth="xs" style={{ marginTop: '10vh' }}>
@@ -148,4 +145,6 @@ const Auth: React.FC = () => {
 }
 
 export default Auth;
+
+
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createProfile, getProfileById, updateProfile, deleteProfile, getAllProfilesModel } from '../models/profiles';
+import { createProfile, getProfileById, updateProfile, deleteProfile, getAllProfilesModel, getCurrentProfileModel } from '../models/profiles';
 
 export const getProfile = async (req: Request, res: Response) => {
     try {
@@ -68,6 +68,26 @@ export const removeProfile = async (req: Request, res: Response) => {
         }
         return res.status(204).send();
     } catch (error) {
+        if (typeof error === 'object' && error !== null && 'message' in error) {
+            return res.status(500).json({ message: 'Server error', error: error.message });
+        } else {
+            return res.status(500).json({ message: 'Server error', error: 'An unknown error occurred' });
+        }
+    }
+};
+
+export const getCurrentProfile = async (req: Request, res: Response) => {
+    console.log("Inside getCurrentProfile Controller");
+    try {
+        const userId = (req as any).user.userId;
+        const profile = await getCurrentProfileModel(userId);
+
+        if (!profile) {
+            return res.status(404).json({ message: 'Current user profile not found' });
+        }
+        return res.status(200).json(profile);
+    } catch (error) {
+        console.error("Error in getCurrentProfile:", error);
         if (typeof error === 'object' && error !== null && 'message' in error) {
             return res.status(500).json({ message: 'Server error', error: error.message });
         } else {

@@ -47,5 +47,14 @@ export const deleteProfile = async (id: string): Promise<boolean> => {
     return result.rowCount > 0;
 };
 
+export const getCurrentProfileModel = async (userId: string): Promise<Profile | null> => {
+    console.log("Fetching profile for userId:", userId); // Log the userId you're trying to fetch
+    const result = await pool.query('SELECT * FROM profiles WHERE user_id = $1', [userId]);
+    console.log("Fetched profile:", result.rows[0]); // Log the fetched profile
+    return result.rows[0] || null;
+};
+
+
+
 
 
