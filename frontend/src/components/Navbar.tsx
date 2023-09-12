@@ -7,10 +7,10 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ProfileModal from './ProfileModal';
-import { Profile } from '../types'
+import { Profile as UserProfile } from '../types'; // Import the UserProfile type
 
 type NavbarProps = {
-  profile?: Profile;
+  profile: UserProfile | null; // Use UserProfile type
 };
 
 const Navbar: React.FC<NavbarProps> = ({ profile }) => {
@@ -92,6 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 };
 
 export default Navbar;
+
 
 
 

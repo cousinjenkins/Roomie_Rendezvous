@@ -16,7 +16,7 @@ export enum Gender {
 }
 export type Profile = {
     profile_id?: string;
-    user_id: string;
+    userId: string;
     first_name: string;
     last_name: string;
     gender: Gender;  // Using the Gender enum here.

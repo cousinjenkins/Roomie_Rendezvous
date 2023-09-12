@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Modal, TextField, Button, Paper, Box, Typography, MenuItem } from '@mui/material';
 import { Profile, Gender } from '../types';
 
 type ProfileModalProps = {
@@ -51,46 +49,56 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) =
     <Modal
       open={open}
       onClose={onClose}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      aria-labelledby="edit-profile-modal"
     >
-      <div style={{ 
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '8px',
-        width: '400px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <h2>Edit Profile</h2>
-        <TextField label="First Name" defaultValue={profile.first_name} onChange={handleInputChange('first_name')} fullWidth margin="normal" />
-        <TextField label="Last Name" defaultValue={profile.last_name} onChange={handleInputChange('last_name')} fullWidth margin="normal" />
+      <Box 
+        component={Paper}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '400px',
+          m: 'auto',
+          p: 3,
+          borderRadius: 1,
+          boxShadow: 3,
+        }}
+      >
+        <Typography variant="h6">Edit Profile</Typography>
+        <TextField 
+          label="First Name" 
+          defaultValue={profile.first_name} 
+          onChange={handleInputChange('first_name')} 
+          fullWidth 
+          margin="normal" 
+        />
+        <TextField 
+          label="Last Name" 
+          defaultValue={profile.last_name} 
+          onChange={handleInputChange('last_name')} 
+          fullWidth 
+          margin="normal" 
+        />
         <TextField
           select
           label="Gender"
           value={updatedProfile.gender}
           onChange={handleInputChange('gender')}
-          SelectProps={{
-            native: true,
-          }}
           fullWidth
           margin="normal"
         >
           {Object.values(Gender).map(gender => (
-            <option key={gender} value={gender}>
+            <MenuItem key={gender} value={gender}>
               {gender}
-            </option>
+            </MenuItem>
           ))}
         </TextField>
-        {/* You can continue adding other fields similarly */}
-        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+        <Box mt={2} alignSelf="flex-end">
           <Button variant="contained" color="primary" onClick={handleSave}>
             Save
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Modal>
   );
 };

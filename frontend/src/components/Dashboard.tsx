@@ -6,20 +6,21 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
-import Navbar from './Navbar';
 
-const Dashboard: React.FC = () => {
+type DashboardProps = {
+  currentProfile: Profile | null;
+};
+
+const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     const fetchProfiles = async () => {
-      // Get token from local storage (or wherever it's stored)
       const token = localStorage.getItem('jwt_token'); 
       if (!token) {
         setError('Token not found. Please login again.');
-        return; // Stop execution if there's no token.
+        return;
       }
 
       const headers = {
@@ -31,17 +32,8 @@ const Dashboard: React.FC = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch profiles.");
         }
-
         const data: Profile[] = await response.json();
         setProfiles(data);
-
-        const currentProfileResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/profiles/current-profile`, { headers });
-        if (currentProfileResponse.ok) {
-          setCurrentProfile(await currentProfileResponse.json());
-        } else {
-          throw new Error("Failed to fetch current profile.");
-        }
-
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -60,7 +52,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <Container>
-      <Navbar profile={currentProfile ?? undefined} />
       <Grid container spacing={3}>
         {profiles.map(profile => (
           <Grid item xs={12} sm={6} md={4} key={profile.profile_id}>
@@ -86,5 +77,6 @@ const Dashboard: React.FC = () => {
 }
 
 export default Dashboard;
+
 
 
