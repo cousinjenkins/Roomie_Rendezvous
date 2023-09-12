@@ -12,7 +12,9 @@ const Auth: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    username: ""
+    username: "",
+    first_name: "",
+    last_name: ""
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -73,6 +75,7 @@ const Auth: React.FC = () => {
           
           <form onSubmit={handleSubmit}>
             {!isLogIn && (
+              
               <TextField 
                 variant="outlined"
                 margin="normal"

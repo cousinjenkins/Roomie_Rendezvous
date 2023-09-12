@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useUser } from './components/userContext';
 import { Profile as UserProfile } from './types'
+import MainPage from '../src/components/MainPage'
 
 const darkTheme = createTheme({
   palette: {
@@ -54,6 +55,7 @@ const App: React.FC = () => {
       <Router>
         <Navbar profile={currentProfile} onUpdateProfile={setCurrentProfile} />
         <Routes>
+          <Route path="/" element={<MainPage />} />
           <Route path="/login" element={!user ? <Auth /> : <Navigate to={user.isAdmin ? "/adminDashboard" : "/dashboard"} replace />} />
           <Route path="/dashboard" element={user && !user.isAdmin ? <Dashboard currentProfile={currentProfile}/> : <Navigate to="/login" replace />} />
           <Route path="/adminDashboard" element={user && user.isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />} />
