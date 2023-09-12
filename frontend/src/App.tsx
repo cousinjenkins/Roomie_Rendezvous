@@ -47,10 +47,12 @@ const App: React.FC = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
+  
+
   return (
     <ThemeProvider theme={darkTheme}>
       <Router>
-        <Navbar profile={currentProfile} />
+        <Navbar profile={currentProfile} onUpdateProfile={setCurrentProfile} />
         <Routes>
           <Route path="/login" element={!user ? <Auth /> : <Navigate to={user.isAdmin ? "/adminDashboard" : "/dashboard"} replace />} />
           <Route path="/dashboard" element={user && !user.isAdmin ? <Dashboard currentProfile={currentProfile}/> : <Navigate to="/login" replace />} />

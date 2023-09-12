@@ -7,15 +7,17 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ProfileModal from './ProfileModal';
-import { Profile as UserProfile } from '../types'; // Import the UserProfile type
+import { Profile } from '../types'
 
 type NavbarProps = {
-  profile: UserProfile | null; // Use UserProfile type
+  profile: Profile | null
+  onUpdateProfile: (updatedProfile: Profile) => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ profile }) => {
+const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile }) => {
   const [universities, setUniversities] = useState<string[]>([]);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+
 
   const fetchUniversities = async (query: string) => {
     try {
@@ -44,6 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const handleProfileClick = () => {
     setProfileModalOpen(true);
   };
+
 
   return (
     <>
@@ -78,6 +81,7 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 onClose={() => setProfileModalOpen(false)} 
                 name={profile.first_name}
                 profile={profile}
+                onUpdate={onUpdateProfile}
               />
             </>
           ) : (
@@ -92,7 +96,6 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 };
 
 export default Navbar;
-
 
 
 

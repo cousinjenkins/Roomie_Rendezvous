@@ -6,10 +6,11 @@ type ProfileModalProps = {
   open: boolean;
   onClose: () => void;
   name: string;
-  profile: Profile;  // We're now expecting the whole profile
+  profile: Profile;
+  onUpdate: (updatedProfile: Profile) => void;
 };
 
-const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onUpdate}) => {
   const [updatedProfile, setUpdatedProfile] = useState<Profile>(profile);
 
   const handleInputChange = (field: keyof Profile) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +33,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) =
         body: JSON.stringify(updatedProfile)
       });
 
-      const responseData = await response.json();
-
       if (response.ok) {
         onClose();
-        // Optionally: refresh the page or fetch the updated profile to reflect changes
+        if (response.status !== 204) {
+            const responseData = await response.json();
+            onUpdate(responseData);
+        } else {
+            onUpdate(updatedProfile);
+        }
       } else {
+        const responseData = response.status !== 204 ? await response.json() : {};
         alert(responseData.message || 'Failed to update profile.');
+
       }
     } catch (error) {
       alert('An error occurred while updating the profile.');
