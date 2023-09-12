@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/AdminDashboard';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import ProfileListing from './components/ProfileListing';
+// import ProfileListing from './components/ProfileListing';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useUser } from './components/userContext';
 
@@ -38,7 +38,7 @@ const App: React.FC = () => {
             <Route path="/login" element={!user ? <Auth /> : <Navigate to={user.isAdmin ? "/adminDashboard" : "/dashboard"} replace />} />
             <Route path="/dashboard" element={user && !user.isAdmin ? <Dashboard /> : <Navigate to="/login" replace />} />
             <Route path="/adminDashboard" element={user && user.isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />} />
-            <Route path="/" element={<ProfileListing />} />
+            {/* <Route path="/" element={<ProfileListing />} /> */}
           </Routes>
         </Router>
     </ThemeProvider>

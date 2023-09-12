@@ -20,10 +20,16 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) =
 
   const handleSave = async () => {
     try {
+      const token = localStorage.getItem('jwt_token');
+      if(!token) {
+        alert('Not authenticated.');
+        return;
+      }
       const response = await fetch(`http://localhost:3000/profiles/${profile.profile_id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(updatedProfile)
       });
