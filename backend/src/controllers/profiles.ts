@@ -33,7 +33,12 @@ export const getAllProfiles = async (req: Request, res: Response) => {
 
 export const addProfile = async (req: Request, res: Response) => {
     try {
-        const profile = await createProfile(req.body);
+        const profileData = {
+            ...req.body,
+            user_id: (req as any).user.userId
+        };        
+        // console.log("Received profile data:", req.body);
+        const profile = await createProfile(profileData);
         return res.status(201).json(profile);
     } catch (error) {
         if (typeof error === 'object' && error !== null && 'message' in error) {

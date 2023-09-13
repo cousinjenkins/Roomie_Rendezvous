@@ -34,6 +34,14 @@ export const updateUser = async (id: string, userData: Record<string, any>) => {
   return result.rows[0];
 };
 
+export const isUserProfileComplete = async (userId: string) => {
+  const result = await pool.query(`SELECT isProfileComplete FROM users WHERE user_id = $1`, [userId]);
+  if (result.rows.length > 0) {
+    return result.rows[0].isProfileComplete;
+  }
+  return null;
+};
+
 
 export const deleteUser = async (id: string) => {
   await pool.query(`DELETE FROM users WHERE user_id = $1`, [id]);

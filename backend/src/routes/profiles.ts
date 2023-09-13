@@ -30,6 +30,7 @@ router.get('/current-profile', verifyToken, getCurrentProfile);
 router.get('/profiles', verifyToken, getAllProfiles);
 router.get('/:id', verifyToken, getProfile);
 router.post('/', verifyToken, addProfile);
+
 router.put('/:id', verifyToken, updateExistingProfile);
 router.delete('/:id', verifyToken, removeProfile);
 export default router;

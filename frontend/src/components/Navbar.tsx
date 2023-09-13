@@ -7,28 +7,23 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ProfileModal from './ProfileModal';
-import { Profile } from '../types'
+import { Profile } from '../types';
 
 type NavbarProps = {
-  profile: Profile | null
+  profile: Profile | null;
   onUpdateProfile: (updatedProfile: Profile) => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile }) => {
+const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile}) => {
   const [universities, setUniversities] = useState<string[]>([]);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
 
-
   const fetchUniversities = async (query: string) => {
     try {
-      console.log(`Fetching from URL: http://localhost:3000/search?name=${query}`);
-
       const response = await fetch(`http://localhost:3000/search?name=${query}`);
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
       const universityNames = data.map((uni: any) => uni.name);
       setUniversities(universityNames);
@@ -46,7 +41,6 @@ const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile }) => {
   const handleProfileClick = () => {
     setProfileModalOpen(true);
   };
-
 
   return (
     <>
@@ -76,9 +70,12 @@ const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile }) => {
               <Button color="inherit" onClick={handleProfileClick}>
                 {profile.first_name}
               </Button>
+              <Button color="inherit" component={RouterLink} to="/completeProfile">
+                Complete Profile
+              </Button>
               <ProfileModal
-                open={isProfileModalOpen} 
-                onClose={() => setProfileModalOpen(false)} 
+                open={isProfileModalOpen}
+                onClose={() => setProfileModalOpen(false)}
                 name={profile.first_name}
                 profile={profile}
                 onUpdate={onUpdateProfile}
@@ -96,6 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile }) => {
 };
 
 export default Navbar;
+
 
 
 

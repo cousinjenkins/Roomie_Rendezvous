@@ -23,6 +23,7 @@ export const getAllProfilesModel = async (): Promise<Profile[]> => {
 
 
 export const createProfile = async (profile: Profile): Promise<Profile> => {
+    console.log('create profile')
     const result = await pool.query(
         'INSERT INTO profiles (user_id, first_name, last_name, gender, date_of_birth, bio, smoker, pet, hobbies, language_spoken, looking_to_move_date, university) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *', 
         [profile.user_id, profile.first_name, profile.last_name, profile.gender, profile.date_of_birth, profile.bio, profile.smoker, profile.pet, profile.hobbies, profile.language_spoken, profile.looking_to_move_date, profile.university]

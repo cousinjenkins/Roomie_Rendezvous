@@ -10,8 +10,10 @@ router.post('/login', UserController.loginUser);
 router.post('/refresh-token', UserController.refreshToken);
 
 // CRUD operations
+router.put('/:id/complete-profile', UserController.markProfileAsComplete);
 router.get('/:id', UserController.getUserById);
 router.put('/:id', UserController.updateUser);
 router.delete('/:id', UserController.deleteUser);
+
 
 export default router;

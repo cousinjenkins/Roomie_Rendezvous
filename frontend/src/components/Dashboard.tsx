@@ -9,6 +9,7 @@ import Alert from '@mui/material/Alert';
 
 type DashboardProps = {
   currentProfile: Profile | null;
+  // onUpdateProfile: (updatedProfile: Profile) => void; 
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {

@@ -93,6 +93,20 @@ export const updateUser = async (req: any, res: any) => {
   }
 };
 
+export const markProfileAsComplete = async (req: any, res: any) => {
+  try {
+    const user = await UserModel.updateUser(req.params.id, { isProfileComplete: true });
+    if (user) {
+      res.status(200).json({ message: "Profile marked as complete." });
+    } else {
+      res.status(404).json({ message: "User not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile status." });
+  }
+};
+
+
 export const deleteUser = async (req: any, res: any) => {
   try {
     await UserModel.deleteUser(req.params.id);
@@ -112,11 +126,16 @@ export const loginUser = async (req: any, res: any) => {
       
       await UserModel.storeRefreshToken(user.user_id, refreshToken);
 
+      // Fetch isProfileComplete status
+      const isProfileComplete = await UserModel.isUserProfileComplete(user.user_id);
+
       const userResponse = {
         id: user.user_id,
         name: user.username,
-        isAdmin: user.is_admin
+        isAdmin: user.is_admin,
+        isProfileComplete: isProfileComplete // Add this line
       };
+      console.log("LIAN KAI testing loginUser function " + userResponse)
 
       res.status(200).json({ token: accessToken, user: userResponse });
     } else {
@@ -127,4 +146,5 @@ export const loginUser = async (req: any, res: any) => {
     res.status(500).json({ message: "Error logging in." });
   }
 };
+
 

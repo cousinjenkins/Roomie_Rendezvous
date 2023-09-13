@@ -12,9 +12,7 @@ const Auth: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    username: "",
-    first_name: "",
-    last_name: ""
+    username: ""
   });
   const [error, setError] = useState<string | null>(null);
 
