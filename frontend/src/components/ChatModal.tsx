@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, TextField, Button, List, ListItem, ListItemText, Box, Typography } from '@mui/material';
+import { Modal, TextField, Button, List, ListItem, ListItemText, Box, Typography, Paper, Divider, LinearProgress } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 interface Message {
   sender_id: string;
@@ -91,45 +92,47 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
   };
 
   return (
-    <div>
-      <Modal
-        open={Boolean(receiverId)}
-        onClose={onClose}
-        aria-labelledby="chat-modal-title"
-      >
-        <Box sx={{ 
-          width: '80%', 
+    <Modal
+      open={Boolean(receiverId)}
+      onClose={onClose}
+      aria-labelledby="chat-modal-title"
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <Paper elevation={3} sx={{
+          width: '80%',
           maxWidth: '400px',
-          backgroundColor: 'background.paper', 
-          padding: 2, 
-          margin: 'auto',
+          padding: 2,
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          gap: 2
         }}>
-          <Typography id="chat-modal-title" variant="h6">Chat</Typography>
-          <List>
+          <Typography id="chat-modal-title" variant="h6" align="center">Chat</Typography>
+          <Divider />
+          {loading && <LinearProgress />}
+          <List sx={{ overflowY: 'auto', flexGrow: 1, bgcolor: grey[800], p: 1 }}>
             {messages.map((message, index) => (
               <ListItem key={index}>
                 <ListItemText primary={message.content} />
               </ListItem>
             ))}
           </List>
-          <TextField 
+          <TextField
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Type your message"
             fullWidth
             disabled={loading}
+            variant="outlined"
+            margin="normal"
           />
           {error && <Typography color="error">{error}</Typography>}
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Button onClick={sendMessage} disabled={loading} variant="contained">Send</Button>
-            <Button onClick={onClose} color="error">Close Chat</Button>
+            <Button onClick={onClose} color="error" variant="contained">Close Chat</Button>
           </Box>
-        </Box>
-      </Modal>
-    </div>
+        </Paper>
+      </Box>
+    </Modal>
   );
 };
 
