@@ -62,35 +62,6 @@ const App: React.FC = () => {
     }
   }
 
-  const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>, updatedProfileData: Partial<UserProfile>) => {
-    event.preventDefault();
-    console.log('handleUpdateProfile')
-
-    const token = localStorage.getItem('jwt_token');
-    if (!token) return;
-
-    const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/profiles`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(updatedProfileData)
-      });
-
-      if(response.ok) {
-        const updatedProfile = await response.json();
-        setCurrentProfile(updatedProfile);
-      } else {
-        console.error("Failed to update profile:", await response.text());
-      }
-    } catch (err) {
-      console.error("Error updating profile:", err);
-    }
-  }
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -99,7 +70,7 @@ const App: React.FC = () => {
     {/* {currentProfile} */}
     <ThemeProvider theme={darkTheme}>
       <Router>
-      <Navbar profile={currentProfile} onUpdateProfile={handleUpdateProfile} />
+      <Navbar profile={currentProfile} />
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={
@@ -107,7 +78,7 @@ const App: React.FC = () => {
           } />
           <Route path="/dashboard" element={user && !user.isAdmin ? <Dashboard currentProfile={currentProfile} /> : <Navigate to="/login" replace />} />
           <Route path="/adminDashboard" element={user && user.isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />} />
-          <Route path="/completeProfile" element={<CompleteProfile onUpdateProfile={handleUpdateProfile} />} />
+          <Route path="/completeProfile" element={<CompleteProfile />} />
         </Routes> 
       </Router>
     </ThemeProvider></>

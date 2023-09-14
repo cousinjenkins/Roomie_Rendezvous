@@ -11,10 +11,9 @@ import { Profile } from '../types';
 
 type NavbarProps = {
   profile: Profile | null;
-  onUpdateProfile: (updatedProfile: Profile) => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile}) => {
+const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const [universities, setUniversities] = useState<string[]>([]);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
 
@@ -78,7 +77,6 @@ const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile}) => {
                 onClose={() => setProfileModalOpen(false)}
                 name={profile.first_name}
                 profile={profile}
-                onUpdate={onUpdateProfile}
               />
             </>
           ) : (
@@ -92,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ profile, onUpdateProfile}) => {
   );
 };
 
-export default Navbar;
+export default Navbar; 
 
 
 

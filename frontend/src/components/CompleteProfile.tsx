@@ -2,13 +2,37 @@ import React, { useState } from 'react';
 import { Button, TextField, Container, Paper, Box, Typography, MenuItem, Switch, FormControlLabel, FormControl, InputLabel, Select, SelectChangeEvent } from '@mui/material';
 import { Profile, Gender } from '../types';
 
-type CompleteProfileProps = {
-    onUpdateProfile: (event: React.FormEvent<HTMLFormElement>, updatedProfile: Partial<Profile>) => void;
-};
-  
-
-const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) => {
+const CompleteProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<Partial<Profile>>({});
+
+  const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const token = localStorage.getItem('jwt_token');
+    if (!token) return;
+
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/profiles`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(profileData)
+      });
+
+      if(response.ok) {
+        const updatedProfile = await response.json();
+        // setCurrentProfile(updatedProfile);
+      } else {
+        console.error("Failed to update profile:", await response.text());
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+    }
+  }
 
   const handleInputChange = (field: keyof Profile) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string | undefined; value: unknown; }>) => {
     setProfileData(prev => ({ ...prev, [field]: event.target.value }));
@@ -17,7 +41,7 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
   const handleGenderChange = (event: SelectChangeEvent<Gender>) => {
     const value = event.target.value as Gender;
     setProfileData(prev => ({ ...prev, gender: value }));
-};
+  };
 
   const handleSwitchChange = (field: keyof Profile) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setProfileData(prev => ({ ...prev, [field]: event.target.checked }));
@@ -27,48 +51,12 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
     const date = new Date(event.target.value);
     setProfileData(prev => ({ ...prev, date_of_birth: date }));
   };
-  
+
   const handleMoveDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(event.target.value);
     setProfileData(prev => ({ ...prev, looking_to_move_date: date }));
-};
-
-
-// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
+  };
   
-//     const token = localStorage.getItem('jwt_token'); // Fetch the token in the same way
-//     if (!token) {
-//       alert('Not authenticated.');
-//       return;
-//     }
-  
-//     try {
-//       const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/profiles/`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${token}`
-//         },
-//         body: JSON.stringify(profileData)
-//       });
-  
-//       if (response.ok) {
-//         const responseData = await response.json();
-//         onUpdateProfile(responseData); // pass the updated profile to the callback
-//       } else {
-//         const responseData = response.status !== 204 ? await response.json() : {};
-//         alert(responseData.message || 'Error updating profile.');
-//       }
-//     } catch (err) {
-//       alert('Failed to update profile.');
-//     }
-//   };
-  
-  
-
-
-
   return (
     <Container component="main" maxWidth="xs" style={{ marginTop: '10vh' }}>
       <Paper elevation={3} style={{ padding: '20px', borderRadius: '15px' }}>
@@ -76,11 +64,7 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
           <Typography variant="h5" gutterBottom>
             Complete Your Profile
           </Typography>
-          <form onSubmit={(e) => {
-  e.preventDefault();
-  onUpdateProfile(e, profileData);
-}}>
-
+          <form onSubmit={handleUpdateProfile}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -107,28 +91,27 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
             <FormControl variant="outlined" fullWidth margin="normal">
               <InputLabel>Gender</InputLabel>
               <Select
-    label="Gender"
-    onChange={handleGenderChange}
-    value={profileData.gender || ''}
->
-    <MenuItem value={Gender.MALE}>Male</MenuItem>
-    <MenuItem value={Gender.FEMALE}>Female</MenuItem>
-</Select>
-
+                label="Gender"
+                onChange={handleGenderChange}
+                value={profileData.gender || ''}
+              >
+                <MenuItem value={Gender.MALE}>Male</MenuItem>
+                <MenuItem value={Gender.FEMALE}>Female</MenuItem>
+              </Select>
             </FormControl>
             <TextField
-      variant="outlined"
-      margin="normal"
-      fullWidth
-      id="dob"
-      label="Date of Birth"
-      type="date"
-      onChange={handleDateChange}
-      value={profileData.date_of_birth instanceof Date ? profileData.date_of_birth.toISOString().split('T')[0] : ''}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="dob"
+              label="Date of Birth"
+              type="date"
+              onChange={handleDateChange}
+              value={profileData.date_of_birth instanceof Date ? profileData.date_of_birth.toISOString().split('T')[0] : ''}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
             <TextField
               variant="outlined"
               margin="normal"
@@ -167,18 +150,18 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
               value={profileData.language_spoken || ''}
             />
             <TextField
-  variant="outlined"
-  margin="normal"
-  fullWidth
-  id="moveDate"
-  label="Looking to Move Date"
-  type="date"
-  onChange={handleMoveDateChange}
-  value={profileData.looking_to_move_date instanceof Date ? profileData.looking_to_move_date.toISOString().split('T')[0] : ''}
-  InputLabelProps={{
-    shrink: true,
-  }}
-/>
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="moveDate"
+              label="Looking to Move Date"
+              type="date"
+              onChange={handleMoveDateChange}
+              value={profileData.looking_to_move_date instanceof Date ? profileData.looking_to_move_date.toISOString().split('T')[0] : ''}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
             <TextField
               variant="outlined"
               margin="normal"
@@ -205,4 +188,3 @@ const CompleteProfile: React.FC<CompleteProfileProps> = ({ onUpdateProfile }) =>
 }
 
 export default CompleteProfile;
-

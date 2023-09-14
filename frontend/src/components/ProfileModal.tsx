@@ -7,17 +7,16 @@ type ProfileModalProps = {
   onClose: () => void;
   name: string;
   profile: Profile;
-  onUpdate: (updatedProfile: Profile) => void;
 };
 
-const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onUpdate}) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) => {
   const [updatedProfile, setUpdatedProfile] = useState<Profile>(profile);
 
   const handleInputChange = (field: keyof Profile) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUpdatedProfile(prev => ({ ...prev, [field]: event.target.value }));
   };
 
-  const handleSave = async () => {
+  const handleUpdateProfile = async () => {
     try {
       const token = localStorage.getItem('jwt_token');
       if(!token) {
@@ -37,14 +36,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onU
         onClose();
         if (response.status !== 204) {
             const responseData = await response.json();
-            onUpdate(responseData);
+            setUpdatedProfile(responseData);
         } else {
-            onUpdate(updatedProfile);
+            setUpdatedProfile(updatedProfile);
         }
       } else {
         const responseData = response.status !== 204 ? await response.json() : {};
         alert(responseData.message || 'Failed to update profile.');
-
       }
     } catch (error) {
       alert('An error occurred while updating the profile.');
@@ -100,7 +98,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onU
           ))}
         </TextField>
         <Box mt={2} alignSelf="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button variant="contained" color="primary" onClick={handleUpdateProfile}>
             Save
           </Button>
         </Box>
@@ -110,4 +108,5 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile, onU
 };
 
 export default ProfileModal;
+
 
