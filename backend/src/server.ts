@@ -1,3 +1,4 @@
+import http from 'http'
 import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,12 +10,32 @@ import matchesRouter from './routes/matches'
 import disputesRouter from './routes/disputes';
 import cors from 'cors';
 import proxyRouter from './routes/proxy';
-
-
-
-
+import { Message } from './types';
+import { createMessage } from './models/messages';
+import { Server as SocketIOServer, Socket } from 'socket.io';
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = new SocketIOServer(server);
+
+io.on('connection', (socket: Socket) => {
+    console.log('User connected:', socket.id);
+
+    socket.on('privateMessage', async (message: Message) => {
+        // Save message to DB
+        await createMessage(message);
+
+        // Emit message to the specific receiver
+        socket.to(message.receiver_id).emit('privateMessage', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
+
+
+
 
 
 app.use(express.json());
