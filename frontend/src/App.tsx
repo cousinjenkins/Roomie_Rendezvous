@@ -22,13 +22,13 @@ const App: React.FC = () => {
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
 
-  // useEffect(() => {
-  //   if(user) {
-  //     fetchCurrentProfile();
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if(user) {
+      fetchCurrentProfile();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const fetchCurrentProfile = async () => {
     const token = localStorage.getItem('jwt_token'); 
