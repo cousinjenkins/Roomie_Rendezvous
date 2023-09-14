@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Button, TextField, Container, Paper, Box, Typography, MenuItem, Switch, FormControlLabel, FormControl, InputLabel, Select, SelectChangeEvent } from '@mui/material';
 import { Profile, Gender } from '../types';
+import { useUser } from './userContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const CompleteProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<Partial<Profile>>({});
+  const { setProfile } = useUser(); // get the setProfile function from context
+  const navigate = useNavigate(); // for redirecting after a successful update
 
   const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +30,15 @@ const CompleteProfile: React.FC = () => {
 
       if(response.ok) {
         const updatedProfile = await response.json();
-        // setCurrentProfile(updatedProfile);
+        
+        // Update global profile state with newly saved profile
+        setProfile(updatedProfile);
+
+        // Redirect to main page or dashboard (assuming '/')
+        // You might need to adjust the path as per your routes
+        navigate('/dashboard');
+        
+
       } else {
         console.error("Failed to update profile:", await response.text());
       }

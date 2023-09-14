@@ -7,15 +7,20 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ProfileModal from './ProfileModal';
-import { Profile } from '../types';
+import { useUser } from './userContext';
+import { Profile } from '../types'
 
-type NavbarProps = {
-  profile: Profile | null;
-};
 
-const Navbar: React.FC<NavbarProps> = ({ profile }) => {
+const Navbar: React.FC = () => { 
   const [universities, setUniversities] = useState<string[]>([]);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+  const { user, profile } = useUser(); 
+
+  const isProfileComplete = (profile: Profile | null): boolean => {
+    if (!profile) return false;
+    const requiredFields = ["first_name", "last_name", "gender", "bio", "date_of_birth", "hobbies", "language_spoken", "looking_to_move_date", "pet", "smoker", "university"];
+    return requiredFields.every(field => Boolean(profile[field as keyof Profile]));
+  };
 
   const fetchUniversities = async (query: string) => {
     try {
@@ -64,20 +69,26 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
             )}
             style={{ flex: 'none', width: '250px', margin: '0 15px' }}
           />
-          {profile ? (
+          {user ? (
             <>
               <Button color="inherit" onClick={handleProfileClick}>
-                {profile.first_name}
+                {user.username}
               </Button>
-              <Button color="inherit" component={RouterLink} to="/completeProfile">
-                Complete Profile
-              </Button>
-              <ProfileModal
-                open={isProfileModalOpen}
-                onClose={() => setProfileModalOpen(false)}
-                name={profile.first_name}
-                profile={profile}
-              />
+              {/* Only show 'Complete Profile' button if profile is not complete */}
+              {!isProfileComplete(profile) && (
+                <Button color="inherit" component={RouterLink} to="/completeProfile">
+                  Complete Profile
+                </Button>
+              )}
+              {user && profile && (
+  <ProfileModal
+    open={isProfileModalOpen}
+    onClose={() => setProfileModalOpen(false)}
+    name={user.username}
+    profile={profile}
+  />
+)}
+
             </>
           ) : (
             <Button color="inherit" component={RouterLink} to="/login">
@@ -90,7 +101,8 @@ const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
+
 
 
 

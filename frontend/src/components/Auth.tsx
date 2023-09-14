@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, TextField, Container, Typography, Alert, Paper, Box } from '@mui/material';
 import { useUser } from '../components/userContext';
 import { useNavigate } from 'react-router-dom';
 
-const Auth: React.FC = () => {
-  const { setUser } = useUser();
-  const navigate = useNavigate();
 
+const Auth: React.FC = () => {
+  const { setUser, setProfile } = useUser();
+  const navigate = useNavigate();
   const [isLogIn, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
@@ -40,23 +40,49 @@ const Auth: React.FC = () => {
             body: JSON.stringify(formData)
         });
 
-        const json = await response.json();
-
         if (response.ok) {
-            setUser(json.user);
-            
-            const token = json.token;
-            if (token) {
-              localStorage.setItem('jwt_token', token);  // Storing the token in local storage
-            }
+            const json = await response.json();
 
-            if (json.user.is_admin) {
-                navigate("/adminDashboard");
+            if (isLogIn) {
+              setUser(json.user)
+
+              const token = json.token;
+              if (token) {
+                localStorage.setItem('jwt_token', token);  // Storing the token in local storage
+              }
+  
+              if (json.user.isprofilecomplete) {
+                const response = await fetch(`http://localhost:3000/profiles/profiles`, {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": 'Bearer ' + token
+                  },
+                });
+    
+                const jsonData = await response.json()
+    
+                console.log(jsonData)
+                setProfile(jsonData)
+              } else {
+                setProfile(null)
+              }
+  
+              if (!json.user.isprofilecomplete) {
+                navigate('/completeProfile')
+              } else {
+                if (json.user.is_admin) {
+                  navigate("/adminDashboard");
+              } else {
+                  navigate("/dashboard");
+              }
+              }
             } else {
-                navigate("/dashboard");
+              navigate("/");
             }
+           
         } else {
-            setError(json.message);
+            setError('error');
         }
     } catch (err) {
         setError("An error occurred.");

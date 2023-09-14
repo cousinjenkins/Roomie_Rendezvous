@@ -120,6 +120,8 @@ export const loginUser = async (req: any, res: any) => {
   try {
     const user = await UserModel.loginUser(req.body.email, req.body.password);
 
+    console.log({user})
+
     if (user) {
       const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' });
       const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '7d' });

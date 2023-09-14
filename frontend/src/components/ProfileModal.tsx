@@ -6,7 +6,7 @@ type ProfileModalProps = {
   open: boolean;
   onClose: () => void;
   name: string;
-  profile: Profile;
+  profile: Profile
 };
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose, profile }) => {

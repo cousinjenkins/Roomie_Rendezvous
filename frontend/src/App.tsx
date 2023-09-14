@@ -18,17 +18,17 @@ const darkTheme = createTheme({
 
 const App: React.FC = () => {
   const { user } = useUser();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
 
-  useEffect(() => {
-    if(user) {
-      fetchCurrentProfile();
-    } else {
-      setIsLoading(false);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if(user) {
+  //     fetchCurrentProfile();
+  //   } else {
+  //     setIsLoading(false);
+  //   }
+  // }, [user]);
 
   const fetchCurrentProfile = async () => {
     const token = localStorage.getItem('jwt_token'); 
@@ -70,12 +70,10 @@ const App: React.FC = () => {
     {/* {currentProfile} */}
     <ThemeProvider theme={darkTheme}>
       <Router>
-      <Navbar profile={currentProfile} />
+      <Navbar />
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/login" element={
-            !user ? <Auth /> : (hasProfile === false ? <Navigate to="/completeProfile" replace /> : <Navigate to={user.isAdmin ? "/adminDashboard" : "/dashboard"} replace />)
-          } />
+          <Route path="/login" element={<Auth />} />
           <Route path="/dashboard" element={user && !user.isAdmin ? <Dashboard currentProfile={currentProfile} /> : <Navigate to="/login" replace />} />
           <Route path="/adminDashboard" element={user && user.isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />} />
           <Route path="/completeProfile" element={<CompleteProfile />} />
@@ -89,7 +87,9 @@ export default App;
 
 // <Navbar profile={currentProfile} onUpdateProfile={handleUpdateProfile} /> 
 
-
+          // <Route path="/login" element={
+          //   !user ? <Auth /> : (hasProfile === false ? <Navigate to="/completeProfile" replace /> : <Navigate to={user.isAdmin ? "/adminDashboard" : "/dashboard"} replace />)
+          // } />
 
 
 

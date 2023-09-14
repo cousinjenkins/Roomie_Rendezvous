@@ -1,5 +1,4 @@
-import React, { CSSProperties } from 'react'; // Correct import source
-import Button from '@mui/material/Button';
+import React, { CSSProperties } from 'react';
 
 const MainPage = () => {
     const backgroundImage = `${process.env.PUBLIC_URL}/imagee.png`;
@@ -30,9 +29,6 @@ const MainPage = () => {
     return (
         <div style={styles.container}>
             <div style={styles.title}>Find Roommate</div>
-            <Button style={styles.button} variant="contained" color="primary">
-                Create Account
-            </Button>
         </div>
     );
 };

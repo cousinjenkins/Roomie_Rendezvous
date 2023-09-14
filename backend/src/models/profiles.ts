@@ -24,16 +24,20 @@ export const getAllProfilesModel = async (): Promise<Profile[]> => {
 
 export const createProfile = async (profile: Profile): Promise<Profile> => {
     console.log('create profile')
+
+    console.log(profile)
+
     const result = await pool.query(
-        'INSERT INTO profiles (user_id, first_name, last_name, gender, date_of_birth, bio, smoker, pet, hobbies, language_spoken, looking_to_move_date, university) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *', 
+        'INSERT INTO profiles (user_id, first_name, last_name, gender, date_of_birth, bio, smoker, pet, hobbies, language_spoken, looking_to_move_date, university) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;', 
         [profile.user_id, profile.first_name, profile.last_name, profile.gender, profile.date_of_birth, profile.bio, profile.smoker, profile.pet, profile.hobbies, profile.language_spoken, profile.looking_to_move_date, profile.university]
     );
+    console.log(result)
     return result.rows[0];
 };
 
 export const updateProfile = async (id: string, profileData: Profile): Promise<Profile | null> => {
     const result = await pool.query(
-        'UPDATE profiles SET user_id = $1, first_name = $2, last_name = $3, gender = $4, date_of_birth = $5, bio = $6, smoker = $7, pet = $8, hobbies = $9, language_spoken = $10, looking_to_move_date = $11 WHERE profile_id = $12 RETURNING *', 
+        'UPDATE profiles SET user_id = $1, first_name = $2, last_name = $3, gender = $4, date_of_birth = $5, bio = $6, smoker = $7, pet = $8, hobbies = $9, language_spoken = $10, looking_to_move_date = $11 WHERE profile_id = $12 RETURNING *;', 
         [profileData.user_id, profileData.first_name, profileData.last_name, profileData.gender, profileData.date_of_birth, profileData.bio, profileData.smoker, profileData.pet, profileData.hobbies, profileData.language_spoken, profileData.looking_to_move_date, id]
     );
 

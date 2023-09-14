@@ -7,7 +7,8 @@ export const getProfile = async (req: Request, res: Response) => {
         if (!profile) {
             return res.status(404).json({ message: 'Profile not found' });
         }
-        return res.status(200).json(profile);
+        const profileComplete = Boolean(profile.first_name && profile.last_name && profile.bio && profile.date_of_birth && profile.gender && profile.hobbies && profile.language_spoken && profile.looking_to_move_date && profile.pet && profile.smoker && profile.university);
+        return res.status(200).json({ ...profile, profileComplete }); // ensuring profile is complete
     } catch (error) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
             return res.status(500).json({ message: 'Server error', error: error.message });
@@ -32,12 +33,17 @@ export const getAllProfiles = async (req: Request, res: Response) => {
 
 
 export const addProfile = async (req: Request, res: Response) => {
+    console.log((req as any).user.userId)
+
     try {
         const profileData = {
             ...req.body,
             user_id: (req as any).user.userId
         };        
         // console.log("Received profile data:", req.body);
+
+        console.log(profileData)
+
         const profile = await createProfile(profileData);
         return res.status(201).json(profile);
     } catch (error) {
