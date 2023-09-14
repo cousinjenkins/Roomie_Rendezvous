@@ -71,7 +71,7 @@ const Auth: React.FC = () => {
               if (json.user.isprofilecomplete) {
                 navigate('/completeProfile')
               } else {
-                if (!json.user.is_admin) {
+                if (json.user.is_admin) {
                   navigate("/adminDashboard");
               } else {
                   navigate("/dashboard");

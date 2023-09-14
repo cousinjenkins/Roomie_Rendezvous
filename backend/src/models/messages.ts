@@ -20,10 +20,18 @@ export const createMessage = async (message: Message): Promise<Message> => {
 };
 
 
-export const getMessagesForReceiver = async (receiverId: string): Promise<Message[]> => {
-    const result = await pool.query('SELECT * FROM Messages WHERE receiver_id = $1', [receiverId]);
+export const getMessagesForReceiver = async (receiverProfileId: string): Promise<Message[]> => {
+    const query = `
+        SELECT m.* 
+        FROM Messages m 
+        JOIN profiles p ON m.receiver_id = p.user_id 
+        WHERE p.profile_id = $1;
+    `;
+
+    const result = await pool.query(query, [receiverProfileId]);
     return result.rows;
 };
+
 
 export const getUserIdFromProfileId = async (profileId: string): Promise<string | null> => {
     const query = `
@@ -41,3 +49,4 @@ export const getUserIdFromProfileId = async (profileId: string): Promise<string 
         return null;
     }
 }
+

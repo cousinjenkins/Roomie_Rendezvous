@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, TextField, Button, List, ListItem, ListItemText, Box, Typography } from '@mui/material';
 
 interface Message {
@@ -18,41 +18,6 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!receiverId) return;
-
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        console.log("Fetching messages for receiverId:", receiverId); // CL
-
-        const response = await fetch(`http://localhost:3000/messages/?receiver_id=${receiverId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch messages.');
-        }
-
-        const data = await response.json();
-        console.log("Fetched messages:", data); // <-- Log here
-        setMessages(data);
-      } catch (err) {
-        console.error("Error fetching messages:", err);
-        setError('Failed to fetch messages. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
-  }, [receiverId]);
-
   const sendMessage = async () => {
     try {
       setLoading(true);
@@ -62,14 +27,14 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
         receiver_id: receiverId!,
         content: inputMessage
       };
+      console.log("Preparing to send message with data:", messageData);
 
-      console.log("Sending message with data:", messageData); //logging
 
       const response = await fetch('http://localhost:3000/messages/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`, 
         },
         body: JSON.stringify(messageData),
       });
@@ -79,7 +44,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
       }
 
       const data = await response.json();
-      console.log("Received response from server after sending message:", data); // <-- Log here
+      console.log("Received response from server:", data);
       setMessages(prev => [...prev, data]);
       setInputMessage('');
     } catch (err) {
@@ -89,6 +54,8 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
       setLoading(false);
     }
   };
+
+  
 
   return (
     <div>
@@ -134,4 +101,3 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
 };
 
 export default ChatModal;
-
