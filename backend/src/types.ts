@@ -31,11 +31,10 @@ export type Profile = {
 };
 
 export interface Message {
-    message_id: string;   // UUID
+    message_id?: number;
     sender_id: string;    // UUID
     receiver_id: string;  // UUID
     content: string;
-    timestamp: Date;      // Or string depending on how you handle dates
 }
 
 export type Match = {
@@ -56,5 +55,12 @@ export type Dispute = {
     date_reported?: Date;
     date_resolved?: Date;
 };
+
+import { Request } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
+
+export interface ExtendedRequest extends Request {
+    user?: JwtPayload;
+}
 
 // essentianlly documentation for what data types each entities represent so that you can write it out within TS. ie. API Dict

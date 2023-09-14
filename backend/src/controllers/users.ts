@@ -19,7 +19,7 @@ export const registerUser = async (req: any, res: any) => {
     }
 
     const user = await UserModel.createUser(req.body);
-    const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ userId: user.user_id }, ACCESS_SECRET, { expiresIn: '5h' });
     const refreshToken = jwt.sign({ userId: user.user_id }, REFRESH_SECRET, { expiresIn: '30d' });
 
     await UserModel.storeRefreshToken(user.user_id, refreshToken);

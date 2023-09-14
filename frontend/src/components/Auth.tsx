@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, TextField, Container, Typography, Alert, Paper, Box } from '@mui/material';
 import { useUser } from '../components/userContext';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +29,7 @@ const Auth: React.FC = () => {
         return;
     }
 
-    const endpoint = isLogIn ? '/login' : '/register';
+    const endpoint = isLogIn ? '/login' : '/register'; 
 
     try {
         const response = await fetch(`http://localhost:3000/users${endpoint}`, {

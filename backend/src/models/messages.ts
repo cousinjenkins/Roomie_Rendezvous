@@ -25,4 +25,19 @@ export const getMessagesForReceiver = async (receiverId: string): Promise<Messag
     return result.rows;
 };
 
+export const getUserIdFromProfileId = async (profileId: string): Promise<string | null> => {
+    const query = `
+        SELECT u.user_id 
+        FROM users u 
+        JOIN profiles p ON u.user_id = p.user_id 
+        WHERE p.profile_id = $1;
+    `;
 
+    const result = await pool.query(query, [profileId]);
+    
+    if (result.rows.length > 0) {
+        return result.rows[0].user_id;
+    } else {
+        return null;
+    }
+}

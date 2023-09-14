@@ -4,16 +4,26 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
+import ChatModal from './ChatModal'
 
 type DashboardProps = {
   currentProfile: Profile | null;
+
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+
+  const handleOnClick = (profileId: string) => {
+    setSelectedProfileId(profileId);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -67,11 +77,13 @@ const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
                 <Typography variant="body2"><strong>Smoker:</strong> {profile.smoker ? "Yes" : "No"}</Typography>
                 <Typography variant="body2"><strong>Has Pet:</strong> {profile.pet ? "Yes" : "No"}</Typography>
                 {profile.looking_to_move_date && <Typography variant="body2"><strong>Looking to move on:</strong> {new Date(profile.looking_to_move_date).toLocaleDateString()}</Typography>}
+                <Button variant="contained" color="primary" onClick={() => {if(profile.profile_id) {handleOnClick(profile.profile_id);}}}>Chat</Button>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+      {isModalOpen && <ChatModal receiverId={selectedProfileId} onClose={() => setModalOpen(false)} />}
     </Container>
   );
 }

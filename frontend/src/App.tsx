@@ -70,7 +70,7 @@ const App: React.FC = () => {
     {/* {currentProfile} */}
     <ThemeProvider theme={darkTheme}>
       <Router>
-      <Navbar />
+      <Navbar /> 
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<Auth />} />

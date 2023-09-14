@@ -35,7 +35,6 @@ const CompleteProfile: React.FC = () => {
         setProfile(updatedProfile);
 
         // Redirect to main page or dashboard (assuming '/')
-        // You might need to adjust the path as per your routes
         navigate('/dashboard');
         
 
