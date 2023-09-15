@@ -11,7 +11,7 @@ interface Message {
 type ChatModalProps = {
   receiverId: string | null;
   onClose: () => void;
-};
+}; 
 
 const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -22,7 +22,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
   useEffect(() => {
     if (!receiverId) return;
 
-    const fetchMessages = async () => {
+    const fetchMessages = async () => { 
       try {
         setLoading(true);
         setError(null);
@@ -41,7 +41,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
         }
 
         const data = await response.json();
-        console.log("Fetched messages:", data); // <-- Log here
+        console.log("Fetched messages:", data);
         setMessages(data);
       } catch (err) {
         console.error("Error fetching messages:", err);
@@ -80,7 +80,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ receiverId, onClose }) => {
       }
 
       const data = await response.json();
-      console.log("Received response from server after sending message:", data); // <-- Log here
+      console.log("Received response from server after sending message:", data); 
       setMessages(prev => [...prev, data]);
       setInputMessage('');
     } catch (err) {

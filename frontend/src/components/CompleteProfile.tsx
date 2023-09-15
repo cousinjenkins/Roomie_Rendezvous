@@ -187,7 +187,9 @@ const CompleteProfile: React.FC = () => {
               <MenuItem value="Harvard">Harvard</MenuItem>
               <MenuItem value="Stanford">Stanford</MenuItem>
               <MenuItem value="MIT">MIT</MenuItem>
-              {/* Add more university options here if needed */}
+              <MenuItem value="Dartmouth">Dartmouth</MenuItem>
+              <MenuItem value="Yale">Yale</MenuItem>
+              <MenuItem value="NYU">NYU</MenuItem>
             </TextField>
             <Button type="submit" fullWidth variant="contained" color="primary" style={{ marginTop: '1rem' }}>
               Save
