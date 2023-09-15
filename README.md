@@ -73,3 +73,7 @@ DB_PORT=5432
 ACCESS_SECRET=1234
 REFRESH_SECRET=12345
 
+## Draw.sql
+<img width="1238" alt="Screenshot 2023-09-15 at 6 00 09 PM" src="https://github.com/cousinjenkins/Roomie_Rendezvous/assets/136661500/4e727db4-4ea6-45ee-98e1-0e257f6a7f51">
+
+
