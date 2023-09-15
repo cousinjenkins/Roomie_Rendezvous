@@ -95,9 +95,10 @@ const handleDeleteSuccess = () => {
                 <Typography variant="body2"><strong>Has Pet:</strong> {profile.pet ? "Yes" : "No"}</Typography>
                 {profile.looking_to_move_date && <Typography variant="body2"><strong>Looking to move on:</strong> {new Date(profile.looking_to_move_date).toLocaleDateString()}</Typography>}
                 <Button variant="contained" color="primary" onClick={() => {if(profile.profile_id) {handleOnClick(profile.profile_id);}}}>Chat</Button>
-                {profile.profile_id === currentProfile?.profile_id && (
+                {profile.profile_id === currentProfile?.profile_id && (<>
                 <Button variant="contained" color="secondary" onClick={() => setUpdateModalOpen(true)}>Update</Button>
                 <Button variant="contained" color="error" onClick={() => setDeleteModalOpen(true)}>Delete</Button>
+                </>
                 )}
               </CardContent>
             </Card>
@@ -106,7 +107,16 @@ const handleDeleteSuccess = () => {
       </Grid>
       {isModalOpen && <ChatModal receiverId={selectedProfileId} onClose={() => setModalOpen(false)} />}
       {isUpdateModalOpen && <Modal open={isUpdateModalOpen}  onClose={() => setUpdateModalOpen(false)} ><UpdateProfile profile={currentProfile!} onUpdateSuccess={handleProfileUpdateSuccess}  /></Modal>}
-      {isDeleteModalOpen && (<DeleteProfile open={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)} profileId={currentProfile!.profile_id} onDeleteSuccess={handleDeleteSuccess} />)}
+      {isDeleteModalOpen && currentProfile && currentProfile.profile_id && (
+  <DeleteProfile 
+      open={isDeleteModalOpen} 
+      onClose={() => setDeleteModalOpen(false)} 
+      profileId={currentProfile.profile_id} 
+      onDeleteSuccess={handleDeleteSuccess} 
+  />
+)}
+
+
     </Container>
   );
 }
