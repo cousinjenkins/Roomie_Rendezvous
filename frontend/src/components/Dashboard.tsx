@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
 import ChatModal from './ChatModal'
 import UpdateProfile from './UpdateProfile';
+import DeleteProfile from './DeleteProfile';
 
 type DashboardProps = {
   currentProfile: Profile | null;
@@ -20,12 +21,20 @@ const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
   const [isUpdateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   const handleProfileUpdateSuccess = (updatedProfile: Profile) => {
     setProfiles(prevProfiles => 
         prevProfiles.map(p => p.profile_id === updatedProfile.profile_id ? updatedProfile : p)
     );
     setUpdateModalOpen(false);
+};
+
+const handleDeleteSuccess = () => {
+  setProfiles(prevProfiles => 
+      prevProfiles.filter(p => p.profile_id !== currentProfile?.profile_id)
+  );
+  setDeleteModalOpen(false);
 };
 
   const handleOnClick = (profileId: string) => {
@@ -86,7 +95,10 @@ const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
                 <Typography variant="body2"><strong>Has Pet:</strong> {profile.pet ? "Yes" : "No"}</Typography>
                 {profile.looking_to_move_date && <Typography variant="body2"><strong>Looking to move on:</strong> {new Date(profile.looking_to_move_date).toLocaleDateString()}</Typography>}
                 <Button variant="contained" color="primary" onClick={() => {if(profile.profile_id) {handleOnClick(profile.profile_id);}}}>Chat</Button>
-                {profile.profile_id === currentProfile?.profile_id && (<Button variant="contained" color="secondary" onClick={() => setUpdateModalOpen(true)}>Update</Button>)}
+                {profile.profile_id === currentProfile?.profile_id && (
+                <Button variant="contained" color="secondary" onClick={() => setUpdateModalOpen(true)}>Update</Button>
+                <Button variant="contained" color="error" onClick={() => setDeleteModalOpen(true)}>Delete</Button>
+                )}
               </CardContent>
             </Card>
           </Grid>
@@ -94,6 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({ currentProfile }) => {
       </Grid>
       {isModalOpen && <ChatModal receiverId={selectedProfileId} onClose={() => setModalOpen(false)} />}
       {isUpdateModalOpen && <Modal open={isUpdateModalOpen}  onClose={() => setUpdateModalOpen(false)} ><UpdateProfile profile={currentProfile!} onUpdateSuccess={handleProfileUpdateSuccess}  /></Modal>}
+      {isDeleteModalOpen && (<DeleteProfile open={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)} profileId={currentProfile!.profile_id} onDeleteSuccess={handleDeleteSuccess} />)}
     </Container>
   );
 }
